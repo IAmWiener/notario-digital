@@ -20,39 +20,39 @@
     <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-hidden">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div>
-          <label class="block font-bold mb-1">PROMOCIÓN:</label>
+          <label class="block font-bold mb-1">Promoción:</label>
           <select id="promocion-select" class="w-full border rounded px-2 py-1">
             <option>Cargando…</option>
           </select>
         </div>
         <div>
-          <label class="block font-bold mb-1">VUELTAS:</label>
+          <label class="block font-bold mb-1">Vueltas:</label>
           <input id="vueltas" type="number" placeholder="10"
-                 class="w-20 border rounded px-2 py-1 text-sm">
+                 class="w-full border rounded px-2 py-1 text-sm">
         </div>
         <div>
-          <label class="block font-bold mb-1">PREMIO:</label>
+          <label class="block font-bold mb-1">Premio:</label>
           <input id="premio" type="number" placeholder="150"
-                 class="w-24 border rounded px-2 py-1 text-sm">
+                 class="w-full border rounded px-2 py-1 text-sm">
         </div>
       
         <div>
-          <label class="block font-bold mb-1">GANADORES:</label>
+          <label class="block font-bold mb-1">Ganadores:</label>
           <input id="ganadores" type="number" placeholder="10"
-                 class="w-20 border rounded px-2 py-1 text-sm">
+                 class="w-full border rounded px-2 py-1 text-sm">
         </div>
         <div>
-          <label class="block font-bold mb-1">RANGO:</label>
+          <label class="block font-bold mb-1">Cupón Inicial:</label>
           <input  type="number" id="opcionminima" placeholder="1" class="w-full border rounded px-2 py-1">
         </div>
         <div>
-          <label class="block font-bold mb-1">Hasta:</label>
+          <label class="block font-bold mb-1">Cupón Final:</label>
           <input type="number" id="opcionmaxima" placeholder="399999" class="w-full border rounded px-2 py-1">
         </div>
        
         <div class="flex items-center gap-4">
           <label class="flex items-center gap-2">
-            <input id="ganRepetido" type="checkbox" checked class="accent-blue-600"> Repetir
+            <input id="ganRepetido" type="checkbox" checked class="accent-blue-600"> Repetir ganador encontrado
           </label>
         </div>
         <div class="flex items-end">
@@ -71,8 +71,8 @@
           <thead class="bg-gray-200">
             <tr>
               <th class="p-2">#</th>
-              <th class="p-2">Nombre</th>
-              <th class="p-2">Doc</th>
+              <th class="p-2">Alias</th>
+              <th class="p-1">Documento</th>
               <th class="p-2">Cupon</th>
               <th class="p-2">Premio</th>
               <th class="p-2">Obs</th>
@@ -85,6 +85,7 @@
       <button onclick="guardarResultados()" class="mt-4 bg-green-600 text-white font-bold px-6 py-2 rounded hover:bg-green-700">Guardar</button>
     </div>
 
+   
     
     <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-y-auto">
       <div class="mb-2">
@@ -110,6 +111,17 @@
       </div>
     </div>
   </div>
+
+   <div id="popup-guardado" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center animate-scaleIn">
+    <h2 class="text-lg font-semibold mb-2 text-green-600">¡Guardado con éxito!</h2>
+    <p class="text-sm text-gray-600">Los ganadores fueron registrados correctamente.</p>
+    <button onclick="cerrarPopup()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+      Cerrar
+    </button>
+  </div>
+</div>
+
 
   <script src="assets/js/app.js"></script>
 </body>

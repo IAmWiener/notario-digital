@@ -18,7 +18,7 @@ async function cargarPromociones() {
     promociones = json.data;
 
     if (!json.isSuccess) throw new Error("API responded with failure");
-    cargarGanadores(961);
+    cargarGanadores(promociones.idEjecucionSegmento);
 
     select.innerHTML = '<option value="">Seleccione…</option>';
     json.data.forEach(p => {
@@ -40,7 +40,7 @@ document.getElementById("promocion-select").addEventListener("change", async (e)
   if (index === "") return; // nada seleccionado
 
   //const promocion = promociones[index];
-  const idEjecucionSegmento = 961;//promocion.idEjecucionSegmento;
+  const idEjecucionSegmento = 1010;//promocion.idEjecucionSegmento;
 
   try {
     const resp = await fetch(`${API_BASE}api/proyeccion/${idEjecucionSegmento}/BuscarProyeccion`, {
@@ -87,11 +87,11 @@ async function cargarGanadores(idEjecucionSegmento) {
       const fila = document.createElement("tr");
       fila.className = "border-t";
       fila.innerHTML = `
-        <td class="p-2">${g.numeroOrden}</td>
+        <td class="p-2 text-center">${g.numeroOrden}</td>
         <td class="p-2">${g.nombreInvitado}</td>
-        <td class="p-2">${g.documento}</td>
-        <td class="p-2">${g.numeroCupon}</td>
-        <td class="p-2">${g.nombrePromocion}</td>
+        <td class="p-2 text-center">${g.documento}</td>
+        <td class="p-2 text-center">${g.numeroCupon}</td>
+        <td class="p-2 text-center">${g.nombrePromocion}</td>
       `;
       tablaBody.appendChild(fila);
     });
@@ -166,10 +166,10 @@ await new Promise(resolve => {
       fila.innerHTML = `
         <td class="p-2 text-xs">${i + 1}</td>
         <td class="p-2 text-xs">${g.nombreInvitado}</td>
-        <td class="p-2 text-xs">${g.documento}</td>
-        <td class="p-2 text-xs">${g.numeroCupon}</td>
-        <td class="p-2 text-xs">${payload.premioPromocion}</td>
-        <td class="p-2 text-xs">${g.observacion}</td>
+        <td class="p-2 text-xs text-center">${g.documento}</td>
+        <td class="p-2 text-xs text-center">${g.numeroCupon}</td>
+        <td class="p-2 text-xs text-center">${payload.premioPromocion}</td>
+        <td class="p-2 text-xs text-center">${g.observacion}</td>
       `;
       tabla.appendChild(fila);
     });
@@ -222,7 +222,8 @@ async function guardarResultados() {
     if (!resp.ok) throw new Error("Error en la respuesta");
 
     const result = await resp.json();
-    alert("Ganadores registrados exitosamente.");
+    mostrarPopup();
+    cargarGanadores(idEjecucionSegmento)
     console.log("Respuesta:", result);
 
   } catch (err) {
@@ -231,6 +232,15 @@ async function guardarResultados() {
   }
 }
 
+function mostrarPopup() {
+  document.getElementById("popup-guardado").classList.remove("hidden");
+}
+
+function cerrarPopup() {
+  document.getElementById("popup-guardado").classList.add("hidden");
+  const tablaBody = document.getElementById("tabla-resultado");
+  tablaBody.innerHTML = ""; // limpia la tabla primero
+}
 
 async function exportarReporteGanadores() {
   const index = document.getElementById("promocion-select").value;
@@ -239,8 +249,8 @@ async function exportarReporteGanadores() {
     return;
   }
 
-  //const idEjecucionSegmento = promociones[0].idEjecucionSegmento;
-  const idEjecucionSegmento = 961;
+  const idEjecucionSegmento = promociones[0].idEjecucionSegmento;
+  //const idEjecucionSegmento = 961;
   try {
     const resp = await fetch(`${API_BASE}api/sorteo/${idEjecucionSegmento}/ReporteGanadoresSorteo`, {
       headers: {
