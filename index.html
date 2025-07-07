@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro de Cupones</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-gray-100 font-sans p-4 overflow-x-hidden">
+  <div class="bg-black text-white flex justify-between px-6 py-3">
+    <div class="flex gap-4">
+      <button class="font-bold border-b-2 border-white">Atlantic City</button>
+      <button class="font-bold">Notario</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+    <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div>
+          <label class="block font-bold mb-1">PROMOCIÓN:</label>
+          <select id="promocion-select" class="w-full border rounded px-2 py-1">
+            <option>Cargando…</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1">VUELTAS:</label>
+          <input id="vueltas" type="number" placeholder="10"
+                 class="w-20 border rounded px-2 py-1 text-sm">
+        </div>
+        <div>
+          <label class="block font-bold mb-1">PREMIO:</label>
+          <input id="premio" type="number" placeholder="150"
+                 class="w-24 border rounded px-2 py-1 text-sm">
+        </div>
+      
+        <div>
+          <label class="block font-bold mb-1">GANADORES:</label>
+          <input id="ganadores" type="number" placeholder="10"
+                 class="w-20 border rounded px-2 py-1 text-sm">
+        </div>
+        <div>
+          <label class="block font-bold mb-1">RANGO:</label>
+          <input  type="number" id="opcionminima" placeholder="1" class="w-full border rounded px-2 py-1">
+        </div>
+        <div>
+          <label class="block font-bold mb-1">Hasta:</label>
+          <input type="number" id="opcionmaxima" placeholder="399999" class="w-full border rounded px-2 py-1">
+        </div>
+       
+        <div class="flex items-center gap-4">
+          <label class="flex items-center gap-2">
+            <input id="ganRepetido" type="checkbox" checked class="accent-blue-600"> Repetir
+          </label>
+        </div>
+        <div class="flex items-end">
+          <button id="btn-sorteo" onclick="generarCuponesGanadores()" class=" w-full bg-blue-500 text-white font-bold py-2 rounded hover:bg-blue-600">Iniciar Sorteo</button>
+        </div>
+      </div>
+
+     <div id="cargando" class="hidden flex items-center justify-center gap-3 my-4 text-gray-700 font-semibold text-sm">
+  <span class="loader-spinner"></span>
+  <span class="buscando-text">Buscando cupón ganador: <span id="numero-cupon">------</span></span>
+</div>
+      <div id="contenedor-tabla" class="tabla-scroll transition-opacity duration-300">
+         
+        <table class="w-full text-xs border">
+     
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="p-2">#</th>
+              <th class="p-2">Nombre</th>
+              <th class="p-2">Doc</th>
+              <th class="p-2">Cupon</th>
+              <th class="p-2">Premio</th>
+              <th class="p-2">Obs</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-resultado"></tbody>
+        </table>
+      </div>
+
+      <button onclick="guardarResultados()" class="mt-4 bg-green-600 text-white font-bold px-6 py-2 rounded hover:bg-green-700">Guardar</button>
+    </div>
+
+    
+    <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-y-auto">
+      <div class="mb-2">
+        <label class="font-bold text-sm mb-1">Cantidad de Ganadores:</label>
+        <input id="cantidad-ganadores" type="text" readonly class="border rounded px-2 py-1 bg-gray-100 w-10">
+      </div>
+      <div id="contenedor-tabla" class="tabla-scroll-right transition-opacity duration-300">
+      <table class="w-full text-xs border">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="p-2">#</th>
+            <th class="p-2">Nombre</th>
+            <th class="p-2">Doc</th>
+            <th class="p-2">Cupon</th>
+            <th class="p-2">Promoción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      </div>
+      <div class="flex justify-end gap-2 mt-4">
+        <button onclick="exportarReporteGanadores()" class="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700">Exportar Excel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

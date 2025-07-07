@@ -1,0 +1,48 @@
+.tabla-scroll {
+  max-height: 360px;
+  overflow-y: auto;
+  position: relative;
+}
+.tabla-scroll-right {
+  max-height: 518px;
+  overflow-y: auto;
+  position: relative;
+}
+.tabla-scroll thead th {
+  position: sticky;
+  top: 0;
+  background: #e5e7eb;
+}
+.tabla-scroll-right thead th {
+  position: sticky;
+  top: 0;
+  background: #e5e7eb;
+}
+.opaco {
+  opacity: 0.4;
+  pointer-events: none;
+/* Spinner giratorio */
+}
+.loader-spinner {
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: giro 1s linear infinite;
+}
+
+@keyframes giro {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Animación de opacidad tipo parpadeo */
+.buscando-text {
+  animation: parpadeo 1.2s ease-in-out infinite;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
