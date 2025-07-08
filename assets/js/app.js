@@ -177,6 +177,11 @@ async function generarCuponesGanadores() {
     return;
   }
 
+  if (vueltas < 0 || ganadores < 0 || premio < 0) {
+    mostrarAlerta("Los campos Vueltas, Ganadores y Premio no pueden tener valores negativos.");
+    return;
+  }
+
   const tablaBody = document.getElementById("tabla-resultado");
   const filas = tablaBody.querySelectorAll("tr");
   const index = document.getElementById("promocion-select").value;
@@ -469,6 +474,8 @@ async function exportarReporteGanadores() {
   btn.addEventListener("click", () => {
     tooltip.classList.remove("hidden");
   });
+
+ 
 
   container.addEventListener("mouseleave", () => {
     tooltip.classList.add("hidden");
