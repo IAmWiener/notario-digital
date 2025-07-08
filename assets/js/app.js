@@ -34,12 +34,43 @@ async function cargarPromociones() {
   }
 }
 
+function renderizarTablaIzquierda(lista) {
+  const tbody = document.getElementById("tabla-resultado");
+  tbody.innerHTML = "";
+
+  lista.forEach((item, index) => {
+    const fila = document.createElement("tr");
+    fila.className = "border-t";
+    fila.innerHTML = `
+      <td class="p-2 text-xs">${index + 1}</td>
+      <td class="p-2 text-xs">${item.nombreInvitado}</td>
+      <td class="p-2 text-xs text-center">${item.documento}</td>
+      <td class="p-2 text-xs text-center">${item.numeroCupon}</td>
+      <td class="p-2 text-xs text-center">${item.montoPremio}</td>
+      <td class="p-2 text-xs text-center">${item.observacion || "-"}</td>
+    `;
+    tbody.appendChild(fila);
+  });
+}
+
 //Obtener el id ejecucionsegmento de el combo box.
 
 document.getElementById("promocion-select").addEventListener("change", async (e) => {
   const index = e.target.value;
   const indexIdEjecucionSegmento = e.target.selectedIndex - 1;
   const selected = promociones[indexIdEjecucionSegmento];
+
+  const guardados = localStorage.getItem("ganadoresTablaIzquierda");
+
+  if (guardados) {
+    const datos = JSON.parse(guardados);
+    ganadoresGenerados = datos; // Asignar a variable global si usas una
+    renderizarTablaIzquierda(datos);
+    document.getElementById("btn-guardar").disabled = false;
+    document.getElementById("btn-guardar").classList.remove("opacity-50");
+    document.getElementById("btn-eliminar-resultado").disabled = false;
+    document.getElementById("btn-eliminar-resultado").classList.remove("opacity-50");
+  }
 
    if (selected && selected.idEjecucionSegmento) {
     idEjecucionSegmentoSeleccionado = selected.idEjecucionSegmento;
@@ -125,10 +156,27 @@ function mostrarAdvertencia(mensaje = "Ocurrió una advertencia.") {
 }
 
 
+function mostrarAlerta(mensaje) {
+  const alerta = document.createElement("div");
+  alerta.className = "fixed bottom-5 right-5 bg-red-600 text-white px-4 py-2 rounded shadow-lg z-50";
+  alerta.textContent = mensaje;
+
+  document.body.appendChild(alerta);
+  setTimeout(() => alerta.remove(), 3000);
+}
 
 async function generarCuponesGanadores() {
 
-  
+    // Captura los valores
+  const vueltas = document.getElementById("vueltas").value;
+  const ganadores = document.getElementById("ganadores").value;
+  const premio = document.getElementById("premio").value;
+
+  if (!vueltas || !ganadores || !premio) {
+    mostrarAlerta("Por favor, completa los campos Vueltas, Ganadores y Premio.");
+    return;
+  }
+
   const tablaBody = document.getElementById("tabla-resultado");
   const filas = tablaBody.querySelectorAll("tr");
   const index = document.getElementById("promocion-select").value;
@@ -195,7 +243,11 @@ await new Promise(resolve => {
 
     const json = await resp.json();
 
-    ganadoresGenerados = json.data.invitadosSorteo;
+    //ganadoresGenerados = json.data.invitadosSorteo;
+    ganadoresGenerados = json.data.invitadosSorteo.map(g => ({
+    ...g,
+    montoPremio: payload.premioPromocion
+    }));
     loader.classList.add("hidden");
 
     // Mostrar resultados en la tabla izquierda
@@ -217,6 +269,11 @@ await new Promise(resolve => {
     });
 
     btn.disabled = false;
+    document.getElementById("btn-guardar").disabled = false;
+    document.getElementById("btn-guardar").classList.remove("opacity-50");
+     document.getElementById("btn-eliminar-resultado").disabled = false;
+document.getElementById("btn-eliminar-resultado").classList.remove("opacity-50");
+    localStorage.setItem("ganadoresTablaIzquierda", JSON.stringify(ganadoresGenerados));
     loader.classList.add("hidden");
     numeroCup.textContent = "------";
     // Mostrar botón guardar
@@ -235,6 +292,7 @@ await new Promise(resolve => {
     cerrarAdvertencia();
     const tabla = document.getElementById("tabla-resultado");
     tabla.innerHTML = ""; // limpia la tabla primero
+    localStorage.removeItem("ganadoresTablaIzquierda");
   }
 
  async function  eliminarResultados(){
@@ -283,7 +341,7 @@ async function guardarResultados() {
     idEjecucionSegmento: idEjecucionSegmento,
     invitadosSorteoRequests: ganadoresGenerados.map(g => ({
       idJugadorUnificado: g.idJugadorUnificado,
-      premio: parseFloat(document.getElementById("premio").value),
+      premio: g.premioPromocion,
       numeroCupon: g.numeroCupon,
       documentoInvitado: g.documento,
       idCanje: g.idCanje
@@ -307,8 +365,14 @@ async function guardarResultados() {
     cerrarAdvertencia();
     mostrarPopup();
     //cargarGanadores(idEjecucionSegmento)
+     // si se guarda correctamente
+    localStorage.removeItem("ganadoresTablaIzquierda");
     cargarGanadores(idEjecucionSegmentoSeleccionado)
     btn.disabled = false;
+    document.getElementById("btn-guardar").disabled = true;
+    document.getElementById("btn-guardar").classList.add("opacity-50");
+    document.getElementById("btn-eliminar-resultado").disabled = true;
+    document.getElementById("btn-eliminar-resultado").classList.add("opacity-50");
     console.log("Respuesta:", result);
 
   } catch (err) {
