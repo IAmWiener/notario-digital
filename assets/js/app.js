@@ -4,6 +4,7 @@ const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 const API_KEY = "7B8UQ1n6fKYX8muErNVM4mmcEvMktgkh65HZTvd6AIviLZWRqB50tpaMehp6oddo"
 
 let ganadoresGenerados = [];
+let idEjecucionSegmentoActual = null;
 
 async function cargarPromociones() {
   const select = document.getElementById("promocion-select");
@@ -37,10 +38,21 @@ async function cargarPromociones() {
 
 document.getElementById("promocion-select").addEventListener("change", async (e) => {
   const index = e.target.value;
+  const indexIdEjecucionSegmento = e.target.selectedIndex - 1;
+  const selected = promociones[indexIdEjecucionSegmento];
+
+   if (selected && selected.idEjecucionSegmento) {
+    idEjecucionSegmentoSeleccionado = selected.idEjecucionSegmento;
+    console.log("ID Ejecución seleccionado:", idEjecucionSegmentoSeleccionado);
+  }
+
   if (index === "") return; // nada seleccionado
 
-  //const promocion = promociones[index];
-  const idEjecucionSegmento = 1010;//promocion.idEjecucionSegmento;
+  // const promocion = promociones.idPromocion[index];
+  //const resultado = lista.find(item => item.idSegmentoPromocion === 31)?.idEjecucionSegmento;
+  //promociones.data.idSegmentoPromocion === index}
+
+  const idEjecucionSegmento = idEjecucionSegmentoSeleccionado;
 
   try {
     const resp = await fetch(`${API_BASE}api/proyeccion/${idEjecucionSegmento}/BuscarProyeccion`, {
@@ -88,10 +100,11 @@ async function cargarGanadores(idEjecucionSegmento) {
       fila.className = "border-t";
       fila.innerHTML = `
         <td class="p-2 text-center">${g.numeroOrden}</td>
+        <td class="p-2 text-center">${g.aliasInvitado}</td>
         <td class="p-2">${g.nombreInvitado}</td>
         <td class="p-2 text-center">${g.documento}</td>
         <td class="p-2 text-center">${g.numeroCupon}</td>
-        <td class="p-2 text-center">${g.nombrePromocion}</td>
+        
       `;
       tablaBody.appendChild(fila);
     });
@@ -100,19 +113,48 @@ async function cargarGanadores(idEjecucionSegmento) {
   }
 }
 
+function cerrarAdvertencia() {
+  document.getElementById("popup-advertencia").classList.add("hidden");
+}
+
+function mostrarAdvertencia(mensaje = "Ocurrió una advertencia.") {
+  const popup = document.getElementById("popup-advertencia");
+  const texto = document.getElementById("mensaje-advertencia");
+  texto.textContent = mensaje;
+  popup.classList.remove("hidden");
+}
+
+
+
 async function generarCuponesGanadores() {
+
+  
+  const tablaBody = document.getElementById("tabla-resultado");
+  const filas = tablaBody.querySelectorAll("tr");
   const index = document.getElementById("promocion-select").value;
   if (index === "") return alert("Selecciona una promoción");
+  
+
+
+  if (filas.length !== 0) {
+  // La tabla está vacía
+      document.getElementById("advertencia-guardar").classList.remove("hidden");
+      document.getElementById("eliminar-si").classList.add("hidden");
+      mostrarAdvertencia("Ganadores no han sido guardados, ¿desea registrarlos?");
+  return;
+  }
+
+   
 
   const promo = promociones[0]; // asumimos que tienes promociones[] ya llenado antes
   const loader = document.getElementById("cargando");
-  const tablaBody = document.getElementById("tabla-resultado");
+
   const btn = document.getElementById("btn-sorteo");
   btn.disabled = true;
   tablaBody.innerHTML = "";
   const numeroCup = document.getElementById("numero-cupon");
 
-loader.classList.remove("hidden");
+  loader.classList.remove("hidden");
 
 let intentos = 20;
 let i = 0;
@@ -184,9 +226,49 @@ await new Promise(resolve => {
     console.error("Error generando cupones:", err);
     alert("Hubo un error al generar los cupones.");
   }
-}
+   
+
+  }
+
+  function eliminarGanadoresAdvertencia(){
+    // Limpiar tabla actual
+    cerrarAdvertencia();
+    const tabla = document.getElementById("tabla-resultado");
+    tabla.innerHTML = ""; // limpia la tabla primero
+  }
+
+ async function  eliminarResultados(){
+  const tablaBody = document.getElementById("tabla-resultado");
+  const filas = tablaBody.querySelectorAll("tr");
+ 
+  if (filas.length === 0) {
+  // La tabla está vacía
+       document.getElementById("advertencia-guardar").classList.add("hidden");
+       document.getElementById("eliminar-si").classList.add("hidden");
+      mostrarAdvertencia("No existen ganadores para eliminar");
+  return;
+  }
+      document.getElementById("advertencia-guardar").classList.add("hidden");
+      document.getElementById("eliminar-si").classList.remove("hidden");
+      mostrarAdvertencia("¿Desea borrar los ganadores sin antes registrarlos?");
+ }
 
 async function guardarResultados() {
+
+  const btn = document.getElementById("btn-guardar");
+  const tablaBody = document.getElementById("tabla-resultado");
+  const filas = tablaBody.querySelectorAll("tr");
+ 
+  btn.disabled = true;
+
+  if (filas.length === 0) {
+  // La tabla está vacía
+       document.getElementById("advertencia-guardar").classList.add("hidden");
+       document.getElementById("eliminar-si").classList.add("hidden");
+      mostrarAdvertencia("No existen ganadores para registrar");
+  return;
+  }
+
   if (!ganadoresGenerados || ganadoresGenerados.length === 0) {
     alert("No hay datos para registrar. Ejecuta primero el sorteo.");
     return;
@@ -195,8 +277,8 @@ async function guardarResultados() {
   const index = document.getElementById("promocion-select").value;
   if (index === "") return alert("Selecciona una promoción válida");
 
-  const idEjecucionSegmento = promociones[0].idEjecucionSegmento;
-
+  //const idEjecucionSegmento = promociones[0].idEjecucionSegmento;
+  const idEjecucionSegmento = idEjecucionSegmentoSeleccionado;
   const body = {
     idEjecucionSegmento: idEjecucionSegmento,
     invitadosSorteoRequests: ganadoresGenerados.map(g => ({
@@ -222,8 +304,11 @@ async function guardarResultados() {
     if (!resp.ok) throw new Error("Error en la respuesta");
 
     const result = await resp.json();
+    cerrarAdvertencia();
     mostrarPopup();
-    cargarGanadores(idEjecucionSegmento)
+    //cargarGanadores(idEjecucionSegmento)
+    cargarGanadores(idEjecucionSegmentoSeleccionado)
+    btn.disabled = false;
     console.log("Respuesta:", result);
 
   } catch (err) {
@@ -249,8 +334,8 @@ async function exportarReporteGanadores() {
     return;
   }
 
-  const idEjecucionSegmento = promociones[0].idEjecucionSegmento;
-  //const idEjecucionSegmento = 961;
+  //const idEjecucionSegmento = promociones[0].idEjecucionSegmento;
+  const idEjecucionSegmento = idEjecucionSegmentoSeleccionado;
   try {
     const resp = await fetch(`${API_BASE}api/sorteo/${idEjecucionSegmento}/ReporteGanadoresSorteo`, {
       headers: {
@@ -278,7 +363,7 @@ async function exportarReporteGanadores() {
 
     // 2. Tabla de datos
     const encabezados = [
-      "#", "Promoción", "Fecha Sorteo", "Documento", "Cuenta",
+      "#", "Promoción", "Fecha Sorteo","Id Online", "Alias", "Documento", "Cuenta",
       "Nombre", "Apellido", "Cupón", "Monto Ganado"
     ];
 
@@ -286,12 +371,15 @@ async function exportarReporteGanadores() {
       i + 1,
       g.nombrePromocion,
       new Date(g.fechaSorteo).toLocaleString(),
+      g.idJugadorOrigen,
+      g.aliasInvitado,
       g.documentoInvitado,
       g.cuenta,
       g.nombreInvitado,
       g.apellidoInvitado,
       g.nombreCupon,
-      g.montoGanado
+      g.monedaPromocion + " " + g.montoGanado,
+      
     ]));
 
     // 3. Unimos resumen + tabla
@@ -310,8 +398,17 @@ async function exportarReporteGanadores() {
     alert("Error al exportar el reporte.");
   }
 }
+  const tooltip = document.getElementById("tooltip-ganador");
+  const container = document.getElementById("tooltip-container");
+  const btn = document.getElementById("btn-tooltip");
 
+  btn.addEventListener("click", () => {
+    tooltip.classList.remove("hidden");
+  });
 
+  container.addEventListener("mouseleave", () => {
+    tooltip.classList.add("hidden");
+  });
 window.addEventListener("DOMContentLoaded", () => {
   cargarPromociones();
 });

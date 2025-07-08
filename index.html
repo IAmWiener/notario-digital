@@ -16,102 +16,138 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
-    <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-hidden">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+  <!-- Panel Izquierdo -->
+  <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-hidden">
+    <!-- Contenedor general compacto -->
+    <div class="max-w-2xl mx-auto border border-black p-4 rounded">
+      <!-- Primera fila horizontal: promoción, vueltas, premio, ganadores -->
+      <div class="grid grid-cols-2 gap-2 mb-4">
         <div>
-          <label class="block font-bold mb-1">Promoción:</label>
-          <select id="promocion-select" class="w-full border rounded px-2 py-1">
+          <label class="block text-xs font-semibold mb-1">Promoción</label>
+          <select id="promocion-select" class="w-full border rounded px-2 py-1 text-sm">
             <option>Cargando…</option>
           </select>
         </div>
-        <div>
-          <label class="block font-bold mb-1">Vueltas:</label>
-          <input id="vueltas" type="number" placeholder="10"
-                 class="w-full border rounded px-2 py-1 text-sm">
+        <div class="grid grid-cols-4 gap-4 mb-4">
+         <div>
+          <label class="block text-xs font-semibold mb-1 ">Vueltas</label>
+          <input id="vueltas" type="number" placeholder="0" class=" text-center w-12 border rounded px-2 py-1 text-sm">
         </div>
         <div>
-          <label class="block font-bold mb-1">Premio:</label>
-          <input id="premio" type="number" placeholder="150"
-                 class="w-full border rounded px-2 py-1 text-sm">
-        </div>
-      
-        <div>
-          <label class="block font-bold mb-1">Ganadores:</label>
-          <input id="ganadores" type="number" placeholder="10"
-                 class="w-full border rounded px-2 py-1 text-sm">
+          <label class="block text-xs font-semibold mb-1">Premio S/</label>
+          <input id="premio" type="number" placeholder="0" class="w-12 border rounded px-2 py-1 text-sm">
         </div>
         <div>
-          <label class="block font-bold mb-1">Cupón Inicial:</label>
-          <input  type="number" id="opcionminima" placeholder="1" class="w-full border rounded px-2 py-1">
+          <label class="block text-xs font-semibold mb-1">Ganadores</label>
+          <input id="ganadores" type="number" placeholder="0" class="w-12 border rounded px-2 py-1 text-sm">
         </div>
-        <div>
-          <label class="block font-bold mb-1">Cupón Final:</label>
-          <input type="number" id="opcionmaxima" placeholder="399999" class="w-full border rounded px-2 py-1">
         </div>
        
-        <div class="flex items-center gap-4">
-          <label class="flex items-center gap-2">
-            <input id="ganRepetido" type="checkbox" checked class="accent-blue-600"> Repetir ganador encontrado
-          </label>
+      </div>
+
+      <!-- Segunda fila: cupón inicial y final -->
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-center">Cupón Inicial</label>
+          <input type="number" id="opcionminima" disabled placeholder="0000000"
+            class=" text-center w-full border rounded px-2 py-1 text-sm bg-gray-100 cursor-not-allowed opacity-100">
         </div>
-        <div class="flex items-end">
-          <button id="btn-sorteo" onclick="generarCuponesGanadores()" class=" w-full bg-blue-500 text-white font-bold py-2 rounded hover:bg-blue-600">Iniciar Sorteo</button>
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-center">Cupón Final</label>
+          <input type="number" id="opcionmaxima" disabled placeholder="0000000"
+            class=" text-center w-full border rounded px-2 py-1 text-sm bg-gray-100 cursor-not-allowed opacity-100">
         </div>
       </div>
 
-     <div id="cargando" class="hidden flex items-center justify-center gap-3 my-4 text-gray-700 font-semibold text-sm">
-  <span class="loader-spinner"></span>
-  <span class="buscando-text">Buscando cupón ganador: <span id="numero-cupon">------</span></span>
+      <!-- Checkbox + Botón -->
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+<div class="flex items-center gap-2 relative" id="tooltip-container">
+  <input id="ganRepetido" type="checkbox" checked class="accent-blue-600">
+  <label for="ganRepetido" class="text-sm">Repetir ganador encontrado</label>
+
+  <!-- Botón de interrogante -->
+  <button id="btn-tooltip" class="text-blue-600 text-sm font-bold border border-blue-500 rounded-full w-5 h-5 flex items-center justify-center hover:bg-blue-100">
+    ?
+  </button>
+
+  <!-- Tooltip -->
+  <div id="tooltip-ganador" class="absolute top-full left-0 mt-1 w-64 bg-black text-white text-xs rounded p-2 shadow-lg hidden z-10">
+    Permite que un mismo ganador pueda volver a salir si tiene múltiples cupones.
+  </div>
 </div>
-      <div id="contenedor-tabla" class="tabla-scroll transition-opacity duration-300">
-         
-        <table class="w-full text-xs border">
-     
-          <thead class="bg-gray-200">
-            <tr>
-              <th class="p-2">#</th>
-              <th class="p-2">Alias</th>
-              <th class="p-1">Documento</th>
-              <th class="p-2">Cupon</th>
-              <th class="p-2">Premio</th>
-              <th class="p-2">Obs</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-resultado"></tbody>
-        </table>
+        <button id="btn-sorteo" onclick="generarCuponesGanadores()"
+          class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 w-full md:w-auto">
+          Iniciar Sorteo
+        </button>
       </div>
-
-      <button onclick="guardarResultados()" class="mt-4 bg-green-600 text-white font-bold px-6 py-2 rounded hover:bg-green-700">Guardar</button>
     </div>
 
-   
-    
-    <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-y-auto">
-      <div class="mb-2">
-        <label class="font-bold text-sm mb-1">Cantidad de Ganadores:</label>
-        <input id="cantidad-ganadores" type="text" readonly class="border rounded px-2 py-1 bg-gray-100 w-10">
-      </div>
-      <div id="contenedor-tabla" class="tabla-scroll-right transition-opacity duration-300">
+    <!-- Animación de búsqueda -->
+    <div id="cargando"
+      class="hidden flex items-center justify-center gap-3 my-4 text-gray-700 font-semibold text-sm">
+      <span class="loader-spinner"></span>
+      <span class="buscando-text">Buscando cupón ganador: <span id="numero-cupon">------</span></span>
+    </div>
+
+    <!-- Tabla de la izquierda -->
+    <div id="contenedor-tabla" class="tabla-scroll transition-opacity duration-300 mt-4">
       <table class="w-full text-xs border">
         <thead class="bg-gray-200">
           <tr>
             <th class="p-2">#</th>
-            <th class="p-2">Nombre</th>
-            <th class="p-2">Doc</th>
+            <th class="p-2">Alias</th>
+            <th class="p-1">Documento</th>
             <th class="p-2">Cupon</th>
-            <th class="p-2">Promoción</th>
+            <th class="p-2">Premio S/</th>
+            <th class="p-2">Obs</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-resultado"></tbody>
+      </table>
+    </div>
+
+    <!-- Botón guardar -->
+    <button onclick="guardarResultados()" id="btn-guardar"
+      class="mt-4 bg-green-600 text-white font-bold px-6 py-2 rounded hover:bg-green-700">
+      Guardar
+    </button>
+
+     <button onclick="eliminarResultados()" id="btn-eliminar-resultado"
+      class="mt-4 bg-yellow-600 text-white font-bold px-6 py-2 rounded hover:bg-yellow-700">
+      Borrar
+    </button>
+  </div>
+
+    <!-- Panel Derecho (sin cambios) -->
+  <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-y-auto">
+    <div class="mb-2">
+      <label class="font-bold text-sm mb-1">Cantidad de Ganadores:</label>
+      <input id="cantidad-ganadores" type="text" readonly class="border rounded px-2 py-1 bg-gray-100 w-10">
+    </div>
+    <div id="contenedor-tabla" class="tabla-scroll-right transition-opacity duration-300">
+      <table class="w-full text-xs border">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="p-2">#</th>
+            <th class="p-2">Alias</th>
+            <th class="p-2">Nombre</th>
+            <th class="p-2">Documento</th>
+            <th class="p-2">Cupon</th>
+            
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-      </div>
-      <div class="flex justify-end gap-2 mt-4">
-        <button onclick="exportarReporteGanadores()" class="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700">Exportar Excel</button>
-      </div>
+    </div>
+    <div class="flex justify-end gap-2 mt-4">
+      <button onclick="exportarReporteGanadores()"
+        class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+        Exportar Excel
+      </button>
     </div>
   </div>
-
+</div>
    <div id="popup-guardado" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
   <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center animate-scaleIn">
     <h2 class="text-lg font-semibold mb-2 text-green-600">¡Guardado con éxito!</h2>
@@ -120,6 +156,27 @@
       Cerrar
     </button>
   </div>
+  </div>
+
+<div id="popup-advertencia" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center animate-slideIn border border-yellow-400">
+    <h2 class="text-lg font-semibold mb-2 text-yellow-600">⚠️ Atención</h2>
+    <p id="mensaje-advertencia" class="text-sm text-gray-700">Este es un mensaje de advertencia.</p>
+    <button onclick="cerrarAdvertencia()" class="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+      Cerrar
+    </button>
+    <button onclick="eliminarGanadoresAdvertencia()" id="eliminar-si" class="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+      Si
+    </button>
+    <button onclick="guardarResultados()" id="advertencia-guardar" class="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+      Guardar
+    </button>
+  </div>
+
+  
+
+</div>
+
 </div>
 
 
