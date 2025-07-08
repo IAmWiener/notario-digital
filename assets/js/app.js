@@ -341,7 +341,7 @@ async function guardarResultados() {
     idEjecucionSegmento: idEjecucionSegmento,
     invitadosSorteoRequests: ganadoresGenerados.map(g => ({
       idJugadorUnificado: g.idJugadorUnificado,
-      premio: g.premioPromocion,
+      premio: g.montoPremio,
       numeroCupon: g.numeroCupon,
       documentoInvitado: g.documento,
       idCanje: g.idCanje
