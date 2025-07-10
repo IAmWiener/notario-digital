@@ -18,7 +18,37 @@
 
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
   <!-- Panel Izquierdo -->
-  <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-hidden">
+  <div class="relative bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-hidden">
+
+    <div id="popup-advertencia" class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center animate-slideIn border border-yellow-400">
+    <h2 class="text-lg font-semibold mb-2 text-yellow-600">⚠️ Atención</h2>
+    <p id="mensaje-advertencia" class="text-sm text-gray-700">Este es un mensaje de advertencia.</p>
+
+    <div class="flex justify-center gap-2 mt-4">
+      <button onclick="cerrarAdvertencia()" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+        Cerrar
+      </button>
+      <button onclick="eliminarGanadoresAdvertencia()" id="eliminar-si" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+        Sí
+      </button>
+      <button onclick="guardarResultados()" id="advertencia-guardar" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+        Guardar
+      </button>
+    </div>
+  </div>
+</div>
+<!-- Dentro del DIV panel izquierdo (asegúrate que este tenga la clase relative) -->
+<div id="popup-guardado" class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center animate-scaleIn">
+    <h2 class="text-lg font-semibold mb-2 text-green-600">¡Guardado con éxito!</h2>
+    <p class="text-sm text-gray-600">Los ganadores fueron registrados correctamente.</p>
+    <button onclick="cerrarPopup()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+      Cerrar
+    </button>
+  </div>
+</div>
+
     <!-- Contenedor general compacto -->
     <div class="max-w-2xl mx-auto border border-black p-4 rounded">
       <!-- Primera fila horizontal: promoción, vueltas, premio, ganadores -->
@@ -156,20 +186,6 @@
   </div>
   </div>
 
-<div id="popup-advertencia" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-  <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center animate-slideIn border border-yellow-400">
-    <h2 class="text-lg font-semibold mb-2 text-yellow-600">⚠️ Atención</h2>
-    <p id="mensaje-advertencia" class="text-sm text-gray-700">Este es un mensaje de advertencia.</p>
-    <button onclick="cerrarAdvertencia()" class="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-      Cerrar
-    </button>
-    <button onclick="eliminarGanadoresAdvertencia()" id="eliminar-si" class="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-      Si
-    </button>
-    <button onclick="guardarResultados()" id="advertencia-guardar" class="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-      Guardar
-    </button>
-  </div>
 
   
 
