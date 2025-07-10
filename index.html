@@ -105,6 +105,10 @@
   <div id="tooltip-ganador" class="absolute top-full left-0 mt-1 w-64 bg-black text-white text-xs rounded p-2 shadow-lg hidden z-10">
     Permite que un mismo ganador pueda volver a salir si tiene múltiples cupones.
   </div>
+  <div class="">
+      <label class="pl-5 text-sm">Cantidad de Ganadores:</label>
+      <input id="cantidad-ganadores-left" placeholder="0"  type="text" readonly class="text-center border rounded px-2 py-1 bg-gray-100 w-10">
+    </div>
 </div>
         <button id="btn-sorteo" onclick="generarCuponesGanadores()"
           class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 w-full md:w-auto">
@@ -151,7 +155,7 @@
   <div class="bg-white p-4 rounded-lg shadow text-sm max-h-[90vh] overflow-y-auto">
     <div class="mb-2">
       <label class="font-bold text-sm mb-1">Cantidad de Ganadores:</label>
-      <input id="cantidad-ganadores" type="text" readonly class="border rounded px-2 py-1 bg-gray-100 w-10">
+      <input id="cantidad-ganadores-right" placeholder="0"  type="text" readonly class="border rounded px-2 py-1 bg-gray-100 w-10 text-center">
     </div>
     <div id="contenedor-tabla" class="tabla-scroll-right transition-opacity duration-300">
       <table class="w-full text-xs border">

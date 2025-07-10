@@ -119,8 +119,8 @@ async function cargarGanadores(idEjecucionSegmento) {
     const json = await resp.json();
 
     // Mostrar cantidad de ganadores
-    document.getElementById("cantidad-ganadores").value = json.data.cantidadGanadores;
-
+    document.getElementById("cantidad-ganadores-right").value = json.data.cantidadGanadores;
+    document.getElementById("cantidad-ganadores-left").value = json.data.cantidadGanadores;
     // Limpiar tabla actual
     const tablaBody = document.querySelector(".xl\\:grid-cols-2").children[1].querySelector("tbody");
     tablaBody.innerHTML = "";
