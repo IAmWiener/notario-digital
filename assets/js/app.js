@@ -349,7 +349,8 @@ async function guardarResultados() {
       premio: g.montoPremio,
       numeroCupon: g.numeroCupon,
       documentoInvitado: g.documento,
-      idCanje: g.idCanje
+      idCanje: g.idCanje,
+      hasPremioAsignado : g.hasPremioAsignado
     }))
   };
 
